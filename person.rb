@@ -29,7 +29,7 @@ class Person < Nameable
     @age >= 18
   end
 
-  def add_rental(rental)
-    @rental << rental
+  def add_rental(date, book, _rental)
+    Rental.new(date, book, self)
   end
 end
