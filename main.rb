@@ -4,7 +4,6 @@ class Main
     @app = App.new
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   def handel_options(option)
     case option
     when 1
@@ -19,12 +18,17 @@ class Main
       @app.create_rental
     when 6
       @app.rental_list_by_id
-    when 7
-      @app.exit
     end
     user_input
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
+
+  def check_option(option)
+    if option < 7
+      handel_options(option)
+    else
+      @app.exit
+    end
+  end
 
   def user_input
     puts 'Please select your option by number:'
@@ -37,11 +41,12 @@ class Main
     puts '7- Exit'
 
     option = gets.chomp.to_i
-    handel_options(option)
+    check_option(option)
   end
 
   def welocm
     puts 'Welom to School library App.-'
+    puts "\n"
     user_input
   end
 end
