@@ -4,7 +4,7 @@ class Options
     @app = App.new
   end
 
-  def handel_options(option, main)
+  def handle_options(option, main)
     case option
     when 1
       @app.book_list
@@ -24,7 +24,7 @@ class Options
 
   def check_option(option, main)
     if option < 7
-      handel_options(option, main)
+      handle_options(option, main)
     else
       @app.exit
     end
