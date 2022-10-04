@@ -3,6 +3,8 @@ require_relative 'teacher'
 require_relative 'student'
 require_relative 'rental'
 require_relative 'person'
+require_relative 'file'
+
 class App
   attr_accessor :rentals, :books, :people
 
@@ -118,6 +120,12 @@ class App
   end
 
   def exit
+
+    file= Files.new
+    file.write_into_file(@books , 'book.json')
+    # file.write_into_file(@people , 'people.json')
+    # file.write_into_file(rental, 'rental.json')
+
     abort 'Thank you for using this App!'
   end
 end
