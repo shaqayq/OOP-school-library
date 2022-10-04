@@ -28,6 +28,12 @@ you@your-Pc-name:~$ cd <OOP-school-library>
 - Twitter: [@Darwazi-shaqayq](https://twitter.com/darwazi-shaqayq)
 - LinkedIn: [shaqayq-darwazi](https://linkedin.com/in/shaqayq-darwazi)
 
+👤 **Daniel Urimubenshi**
+
+- GitHub: [@benshidanny11](https://github.com/bensidanny11)
+- Twitter: [@DBenshi](https://twitter.com/DBenshi)
+- LinkedIn: [Daniel Urimubenshi](https://www.linkedin.com/in/danielurimubenshi/)
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
