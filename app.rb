@@ -6,12 +6,13 @@ require_relative 'person'
 require_relative 'file'
 
 class App
-  attr_accessor :rentals, :books, :people
+  attr_accessor :rentals, :books, :people, :file
 
   def initialize
-    @books = []
-    @people = []
-    @rental = []
+    @file= Files.new
+    @books = file.objects_from_array(file.read_from_file('book.json')) || []
+    @people = file.objects_from_array(file.read_from_file('people.json')) || []
+    @rental = file.rentals_from_array(file.read_from_file('rental.json'),@books,@people) || []
   end
 
   def book_list
@@ -108,8 +109,10 @@ class App
   def rental_list_by_id
     print 'ID of person: '
     id = gets.chomp.to_i
+
     person1 = @people.select { |p| p.id == id }[0]
-    if person1
+    print person1.name
+    if person1.name
       person1.rentals.each do |rental|
         puts "Rental Date: #{rental.date}, Book: #{rental.book.title} by #{rental.person.name}"
       end
@@ -121,11 +124,9 @@ class App
 
   def exit
 
-    file= Files.new
-    file.write_into_file(@books , 'book.json')
-    # file.write_into_file(@people , 'people.json')
-    # file.write_into_file(rental, 'rental.json')
-
+    @file.write_into_file(@books , 'book.json')
+    @file.write_into_file(@people , 'people.json')
+    @file.write_into_file(@rental, 'rental.json')
     abort 'Thank you for using this App!'
   end
 end
