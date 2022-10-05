@@ -10,8 +10,8 @@ class App
 
   def initialize
     @file= Files.new
-    @books = file.objects_from_array(file.read_from_file('book.json')) || []
-    @people = file.objects_from_array(file.read_from_file('people.json')) || []
+    @books = file.objects_from_array(file.read_from_file('book.json'),'book') || []
+    @people = file.objects_from_array(file.read_from_file('people.json'),'people') || []
     @rental = file.rentals_from_array(file.read_from_file('rental.json'),@books,@people) || []
   end
 
@@ -123,7 +123,6 @@ class App
   end
 
   def exit
-
     @file.write_into_file(@books , 'book.json')
     @file.write_into_file(@people , 'people.json')
     @file.write_into_file(@rental, 'rental.json')

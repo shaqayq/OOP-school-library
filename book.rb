@@ -13,14 +13,14 @@ class Book
     Rental.new(date, self, person)
   end
 
-  def to_hash
-    hash = {}
-    hash[:class] = self.class
-    hash[:title] = @title
-    hash[:author] = @author
-    hash[:id] = @id
-    hash
-  end
+  # def to_hash
+  #   hash = {}
+  #   hash[:class] = self.class
+  #   hash[:title] = @title
+  #   hash[:author] = @author
+  #   hash[:id] = @id
+  #   hash
+  # end
 
   def self.create_from_hash(hash)
     Book.new(hash['title'], hash['author'], id: hash['id'])

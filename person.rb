@@ -32,4 +32,8 @@ class Person < Nameable
   def add_rental(date, book)
     Rental.new(date, book, self)
   end
+
+  def self.create_from_hash(hash)
+    Person.new(hash['age'], hash['name'],id: hash['id'])
+  end
 end
