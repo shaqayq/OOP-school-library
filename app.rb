@@ -1,3 +1,4 @@
+# rubocop:disable Lint/NonAtomicFileOperation
 require_relative './person'
 require_relative './student'
 require_relative './rentals'
@@ -85,7 +86,7 @@ class App
   end
 
   def save
-    FileUtils.mkdir_p './data'
+    Dir.mkdir './data' unless Dir.exist? './data'
     @person_storage.save
     @book_storage.save
     # save rentals
@@ -99,3 +100,5 @@ class App
     File.write('./data/rentals.json', JSON.generate(data))
   end
 end
+
+# rubocop:enable Lint/NonAtomicFileOperation
