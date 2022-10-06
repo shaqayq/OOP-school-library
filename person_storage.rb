@@ -18,16 +18,16 @@ class PersonStorage
     JSON.parse(data).map do |person|
       result = if person['specialization']
                  Teacher.new(
-                   age: person['age'],
-                   specialization: person['specialization'],
+                   person['age'],
+                   person['specialization'],
                    name: person['name'],
                    parent_permission: person['parent_permission']
                  )
                else
                  Student.new(
-                   classroom: @classroom,
-                   age: person['age'],
-                   name: person['name'],
+                   person['age'],
+                   person['name'],
+                   @classroom,
                    parent_permission: person['parent_permission']
                  )
                end
@@ -63,9 +63,9 @@ class PersonStorage
     parent_permission = gets.chomp.downcase == 'y'
     [age, name, parent_permission]
   end
-
+# 13, 'Mark Jacob', 5, parent_permission: fals
   def add_student(age, name, parent_permission)
-    student = Student.new(age: age, name: name, parent_permission: parent_permission, classroom: @classroom)
+    student = Student.new(age, name,@classroom, parent_permission: parent_permission)
     @people.push(student)
   end
 
@@ -84,9 +84,9 @@ class PersonStorage
     specialization = gets.chomp
     [age, name, specialization]
   end
-
+# Teacher.new(32, 'technician', name: 'Mike')
   def add_teacher(age, name, specialization)
-    teacher = Teacher.new(age: age, name: name, specialization: specialization)
+    teacher = Teacher.new(age, specialization, name: name,)
     @people.push(teacher)
   end
 

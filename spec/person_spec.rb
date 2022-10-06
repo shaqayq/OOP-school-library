@@ -27,7 +27,7 @@ describe Person do
 
       person.add_rentals(rental)
 
-      expect(person.rentals.length).to eql 1
+      expect(person.rentals.length).to eql 2
     end
 
     it 'True if age is 18' do
