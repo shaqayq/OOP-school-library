@@ -1,123 +1,104 @@
-require_relative 'book'
-require_relative 'teacher'
-require_relative 'student'
-require_relative 'rental'
-require_relative 'person'
+# rubocop:disable Lint/NonAtomicFileOperation
+require_relative './person'
+require_relative './student'
+require_relative './rentals'
+require_relative './teacher'
+require_relative './class_room'
+require_relative './book_storage'
+require_relative './person_storage'
+require 'json'
+
 class App
-  attr_accessor :rentals, :books, :people
-
   def initialize
-    @books = []
-    @people = []
-    @rental = []
+    @book_storage = BookStorage.new
+    @person_storage = PersonStorage.new
+    @rentals = load_rentals
   end
 
-  def book_list
-    puts 'Books List:'
-    if @books.empty?
-      puts 'Ther is not any book!'
-    else
-      @books.each_with_index do |book, index|
-        puts "#{index + 1}- #{book.title} by #{book.author}"
-      end
+  def load_rentals
+    return [] unless File.exist? './data/rentals.json'
+
+    data = File.read './data/rentals.json'
+    JSON.parse(data).map do |rental|
+      person = @person_storage.get_person_at_index(rental['person_idx'])
+      book = @book_storage.get_book_at_index(rental['book_idx'])
+      Rental.new(rental['date'], person, book)
     end
-    puts "\n"
   end
 
-  def people_list
-    puts 'People List:'
-    if @people.empty?
-      puts 'Ther is not any person!'
+  # rubocop:disable Metrics/CyclomaticComplexity
+  def handle_action(option)
+    case option
+    when '1'
+      @book_storage.list_books
+    when '2'
+      @person_storage.list_people
+    when '3'
+      @person_storage.create_person
+    when '4'
+      @book_storage.create_book
+    when '5'
+      create_rental
+    when '6'
+      list_rentals
+    when '7'
+      save
+      true
     else
-      @people.each_with_index do |person, index|
-        puts " #{index + 1}- ID: #{person.id} #{person.name} "
-      end
+      puts 'That is not a valid option'
     end
-    puts "\n"
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
-  def create_book
-    print 'Title:'
-    title = gets.chomp
-    print 'Author: '
-    author = gets.chomp
-    @books.push(Book.new(title, author))
+  private
 
-    puts 'Your Book Create successfuly!'
-    puts "\n"
-  end
-
-  def create_person
-    puts 'Do you want to create a student (1) or teacher (2)?[Input the number]'
-    number = gets.chomp.to_i
-    if number == 1
-      create_student
-    else
-      create_teacher
-    end
-    puts "\n"
-  end
-
-  def create_student
-    print 'Age:'
-    age = gets.chomp
-    print 'Name:'
-    name = gets.chomp
-    print 'Has Parent Permission?[Y/N] '
-    permission = gets.chomp
-
-    @people.push(Student.new(age, name, parent_permission: permission))
-
-    puts 'Student Successfully Add!'
-    puts "\n"
-  end
-
-  def create_teacher
-    print 'Age:'
-    age = gets.chomp
-    print 'Name: '
-    name = gets.chomp
-    print 'Specialization:'
-    specialization = gets.chomp
-
-    @people.push(Teacher.new(specialization, age, name, parent_permission: false))
-    puts 'Successfuly Add Teacher!'
-    puts "\n"
-  end
-
-  def create_rental
-    puts 'Select a book from the following list by number:'
-    book_list
-    book_index = gets.chomp.to_i
-
-    puts 'Select a person from the following list by number:'
-    people_list
-    people_index = gets.chomp.to_i
-
+  def rental_input
+    puts 'Select a book from the following list by number'
+    @book_storage.each_with_index { |book, i| puts "#{i}) #{book}" }
+    book_i = gets.chomp.to_i
+    puts
+    puts 'Select a person from the following list by number (not ID)'
+    @person_storage.each_with_index { |person, i| puts "#{i}) #{person}" }
+    person_i = gets.chomp.to_i
+    puts
     print 'Date: '
     date = gets.chomp
-
-    @rental.push(Rental.new(date, books[book_index - 1], people[people_index - 1]))
-
-    puts 'Rental create successfully!'
-    puts "\n"
+    [date, person_i, book_i]
   end
 
-  def rental_list_by_id
+  def add_rental(date, person_i, book_i)
+    rental = Rental.new(date, @person_storage.get_person_at_index(person_i), @book_storage.get_book_at_index(book_i))
+    @rentals.push(rental)
+  end
+
+  def create_rental()
+    results = rental_input
+    add_rental(results[0], results[1], results[2])
+    puts 'Rental created successfullyy'
+  end
+
+  def list_rentals
     print 'ID of person: '
-    id = gets.chomp.to_i
-    person1 = @people.select { |p| p.id == id }[0]
-    if person1
-      person1.rentals.each do |rental|
-        puts "Rental Date: #{rental.date}, Book: #{rental.book.title} by #{rental.person.name}"
-      end
-    else
-      puts 'Please enter correct ID!'
-    end
-    puts "\n"
+    id = gets.chomp
+
+    puts 'Rentals:'
+    @rentals.each { |rental| puts rental if rental.person.id == id.to_i }
   end
 
-  def exit
-    abort 'Thank you for using this App!'
+  def save
+    Dir.mkdir './data' unless Dir.exist? './data'
+    @person_storage.save
+    @book_storage.save
+    # save rentals
+    data = @rentals.map do |rental|
+      {
+        date: rental.date,
+        book_idx: @book_storage.books.index(rental.book),
+        person_idx: @person_storage.people.index(rental.person)
+      }
+    end
+    File.write('./data/rentals.json', JSON.generate(data))
   end
 end
+
+# rubocop:enable Lint/NonAtomicFileOperation

@@ -1,18 +1,27 @@
-require_relative 'person'
+require_relative './person'
+
 class Student < Person
   attr_reader :classroom
 
-  def initialize(age, name = 'unknown', classroom = 3, parent_permission: false)
-    super(age, name, parent_permission: parent_permission)
+  def initialize(age:, classroom:, name: 'Unknown', parent_permission: true)
+    super(name: name, age: age, parent_permission: parent_permission)
     @classroom = classroom
+  end
+
+  def classroom=(classroom)
+    @classroom = classroom
+    classroom.students.push(self) unless classroom.students.include?(self)
   end
 
   def play_hooky
     "¯\(ツ)/¯"
   end
 
-  def classroom=(classroom)
-    @classroom = classroom
-    classroom.add_student(self)
+  def to_s
+    "[Student] #{super}"
+  end
+
+  def to_json(json)
+    json.generate({ 'name' => @name, 'age' => @age, 'parent_permission' => @parent_permission })
   end
 end
