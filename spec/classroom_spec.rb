@@ -13,6 +13,5 @@ describe Classroom do
     c.add_student(s)
 
     expect(c.student.length).to eql 1
-    
   end
 end
