@@ -85,7 +85,7 @@ class App
   end
 
   def save
-    Dir.mkdir './data' unless Dir.exist? './data'
+    FileUtils.mkdir_p './data'
     @person_storage.save
     @book_storage.save
     # save rentals
