@@ -1,24 +1,27 @@
-require_relative 'person'
+require_relative './person'
+
 class Teacher < Person
-  def initialize(specialization, age, name = 'unknown', parent_permission: false,  id:nil)
-    super(age, name, parent_permission: parent_permission, id:id)
+  def initialize(age:, specialization:, name: 'Unknown', parent_permission: true)
+    super(name: name, age: age, parent_permission: parent_permission)
     @specialization = specialization
   end
 
   def can_use_services?
     true
   end
-  def to_hash
-    hash = {}
-    hash[:class] = self.class
-    hash[:age] = @age
-    hash[:specialization] = @specialization
-    hash[:name] = @name
-    hash[:id] = @id
-    hash
+
+  def to_s
+    "[Teacher] #{super}"
   end
 
-  def self.create_from_hash(hash)
-    Teacher.new(hash['age'], hash['specialization'], hash['name'], id: hash['id'])
+  def to_json(json)
+    json.generate(
+      {
+        age: @age,
+        name: @name,
+        specialization: @specialization,
+        parent_permission: @parent_permission
+      }
+    )
   end
 end
